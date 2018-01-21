@@ -12,13 +12,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Auxiliar {
-
+    /*
+    REFAZER MÉTODO PARA TROCA DE TELAS.
     public static void transicaoTela(Context telaAtual, Class classe){
-        Class ref = classe.getClass();
-        Intent intent = new Intent(telaAtual, ref.getClass());
+        Intent intent = new Intent(telaAtual,classe.getClass());
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         telaAtual.startActivity(intent);
     }
+    */
 
     public static boolean verificaExpressaoRegularEmail(String email) {
 

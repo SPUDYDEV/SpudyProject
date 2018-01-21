@@ -21,10 +21,16 @@ import com.example.spudydev.spudy.R;
 import com.example.spudydev.spudy.TurmaActivity;
 import com.example.spudydev.spudy.activity.DisciplinaActivity;
 import com.example.spudydev.spudy.infraestrutura.gui.LoginActivity;
+import com.example.spudydev.spudy.infraestrutura.persistencia.AcessoFirebase;
 import com.example.spudydev.spudy.perfil.gui.MeuPerfilProfessorActivity;
 import com.example.spudydev.spudy.perfil.negocio.DadosMenuLateral;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 
 
 public class MainProfessorActivity extends AppCompatActivity
@@ -46,6 +52,8 @@ public class MainProfessorActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
+        //Carregar turmas
+        carregarTurmas();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fabButtonCriarTurma);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -152,6 +160,25 @@ public class MainProfessorActivity extends AppCompatActivity
         alerta = builder.create();
         //Exibe
         alerta.show();
+    }
+    //Carregando turmas
+    public void carregarTurmas(){
+
+        AcessoFirebase.getFirebase().addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                ArrayList<String> turmasMinistradas = new ArrayList<String>();
+                for (DataSnapshot i: dataSnapshot.getChildren()){
+                    String s = i.child("turmasMinistradas").getValue(String.class);
+                }
+                //DataSnapshot referenciaTurmasMinistradas = dataSnapshot.child("professor").child(AcessoFirebase.getUidUsuario()).child("turmasMinistradas");
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
     //Intent perfil professor
     public void abrirTelaMeuPerfilProfessorActivity(){

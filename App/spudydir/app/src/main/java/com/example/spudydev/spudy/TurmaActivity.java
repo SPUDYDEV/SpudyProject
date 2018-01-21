@@ -1,14 +1,19 @@
 package com.example.spudydev.spudy;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.spudydev.spudy.entidades.Turma;
 import com.example.spudydev.spudy.infraestrutura.persistencia.AcessoFirebase;
+import com.example.spudydev.spudy.infraestrutura.utils.Auxiliar;
 import com.example.spudydev.spudy.infraestrutura.utils.MD5;
+import com.example.spudydev.spudy.usuario.professor.gui.MainProfessorActivity;
 
 public class TurmaActivity extends AppCompatActivity {
 
@@ -25,9 +30,19 @@ public class TurmaActivity extends AppCompatActivity {
         nomeTurma = findViewById(R.id.edtNomeTurma);
         cargaHorariaDiaria = findViewById(R.id.edtCargaHorariaDiaria);
 
+        Button btnCriarTurma = findViewById(R.id.btnCriarTurma);
+
+        btnCriarTurma.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String codigoTurma = criarTurma(nomeTurma.getText().toString(), cargaHorariaDiaria.getText().toString());
+                Auxiliar.criarToast(TurmaActivity.this,"Codigo: " + codigoTurma);
+            }
+        });
+
+
+
         //criando turma
-        String codigoTurma = criarTurma(nomeTurma.getText().toString(), cargaHorariaDiaria.getText().toString());
-        Toast.makeText(TurmaActivity.this, "Codigo: " + codigoTurma, Toast.LENGTH_SHORT).show();
     }
 
     private String criarTurma(String nomedaturma, String cargaHorariaDiaria){
@@ -40,7 +55,7 @@ public class TurmaActivity extends AppCompatActivity {
         //Salvando a turma na árvore turma
         AcessoFirebase.getFirebase().child("turma").child(codigoTurma).setValue(turma.toMapTurma());
         //Salvando a turma na árvore professor
-        AcessoFirebase.getFirebase().child("professor").child("turmasMinistradas").child(codigoTurma).setValue("0");
+        AcessoFirebase.getFirebase().child("professor").child(uid).child("turmasMinistradas").child(codigoTurma).setValue(codigoTurma);
 
         return codigoTurma;
     }
@@ -52,5 +67,11 @@ public class TurmaActivity extends AppCompatActivity {
         turma.setNome(nomedaturma);
         turma.setCargaHorariaDiaria(cargaHorariaDiaria);
         return turma;
+    }
+    public void abrirTelaMainProfessor(){
+        Intent abrirTelaMainProfessor = new Intent(TurmaActivity.this, MainProfessorActivity.class);
+        startActivity(abrirTelaMainProfessor);
+        finish();
+
     }
 }

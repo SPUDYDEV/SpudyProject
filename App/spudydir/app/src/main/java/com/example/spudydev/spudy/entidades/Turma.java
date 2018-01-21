@@ -6,9 +6,6 @@ import com.example.spudydev.spudy.usuario.professor.dominio.Professor;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-/**
- * Created by User on 08/01/2018.
- */
 
 public class Turma {
 

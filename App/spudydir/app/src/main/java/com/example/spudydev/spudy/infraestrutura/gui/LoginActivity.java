@@ -70,7 +70,7 @@ public class LoginActivity extends AppCompatActivity {
         //Transição tela login para registro fim
 
     }
-    //realizando verificação de campos
+    //Realizando verificação de campos
     private boolean validarCampos(String CampoEmail, String CampoSenha){
         boolean validacao = true;
 

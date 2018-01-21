@@ -196,9 +196,9 @@ public class RegistroActivity extends AppCompatActivity {
         AcessoFirebase.getFirebase().child("pessoa").child(uidUsuario).setValue(pessoa.toMapPessoa());
         //Salvando Aluno OU Professor
         if (usuario.getTipoConta().equals("Aluno")){
-            AcessoFirebase.getFirebase().child("aluno").child(uidUsuario).child("turmas").setValue("0");
+            AcessoFirebase.getFirebase().child("aluno").child(uidUsuario).child("turmas").child("SENTINELA").setValue("0");
         }else{
-            AcessoFirebase.getFirebase().child("professor").child(uidUsuario).child("turmasMinistradas").child("hash").setValue("0");
+            AcessoFirebase.getFirebase().child("professor").child(uidUsuario).child("turmasMinistradas").child("SENTINELA").setValue("0");
         }
     }
 

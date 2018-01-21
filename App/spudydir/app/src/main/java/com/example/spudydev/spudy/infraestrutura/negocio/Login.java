@@ -19,9 +19,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
-/**
- * Created by Matheus on 20/01/2018.
- */
 
 public class Login {
 
