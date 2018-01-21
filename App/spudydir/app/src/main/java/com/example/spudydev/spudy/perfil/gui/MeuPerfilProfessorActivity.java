@@ -107,7 +107,7 @@ public class MeuPerfilProfessorActivity extends AppCompatActivity
         dataNascimentoConsulta.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Auxiliar.transicaoTela(getApplicationContext(), AlterarDataNascimentoActivity.class);
+                abrirTelaAlteraDataNascimentoActivity();
             }
         });
 
