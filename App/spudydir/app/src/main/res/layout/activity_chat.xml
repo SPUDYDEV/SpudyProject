@@ -9,17 +9,18 @@
     tools:openDrawer="start">
 
     <include
-        layout="@layout/app_bar_alterar_dados_cadastrais"
+        layout="@layout/app_bar_chat"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <android.support.design.widget.NavigationView
+    <RelativeLayout
         android:id="@+id/nav_view"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
-        app:headerLayout="@layout/nav_header_alterar_dados_cadastrais"
-        app:menu="@menu/activity_alterar_dados_cadastrais_drawer" />
+        app:headerLayout="@layout/nav_header_chat"
+        app:menu="@menu/activity_chat_drawer" />
+
 
 </android.support.v4.widget.DrawerLayout>

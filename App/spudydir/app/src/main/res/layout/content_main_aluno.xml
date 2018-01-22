@@ -9,4 +9,10 @@
     tools:context=".usuario.aluno.gui.MainAlunoActivity"
     tools:showIn="@layout/app_bar_main_aluno">
 
+    <ListView
+        android:id="@+id/lvTurmasAluno"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </ListView>
+
 </RelativeLayout>

@@ -9,6 +9,12 @@
     <string name="sp_btn_alterar_senha">Alterar Senha</string>
     <string name="sp_btn_alterar_instituicao">Alterar Instituição</string>
 
+    <string name="sp_chat_usuarios">Usuários</string>
+    <string name="sp_chat_notas">Notas</string>
+    <string name="sp_chat_faltas">Faltas</string>
+    <string name="sp_chat_materiais">Materiais</string>
+    <string name="sp_chat_nome_turma">NOME DA TURMA</string>
+
     <string name="sp_hint_resposta">Resposta</string>
     <string name="sp_hint_nome">Nome completo</string>
     <string name="sp_hint_nascimento">Data de Nascimento</string>
@@ -24,7 +30,6 @@
     <string name="sp_hint_novo_nome">Digite novo nome</string>
     <string name="sp_hint_senha_antiga">Digite a senha antiga</string>
     <string name="sp_hint_senha_nova">Digite nova senha</string>
-
 
     <string name="sp_title_adionar_turma"><b>ADICIONAR \n TURMA</b></string>
     <string name="sp_fra_digitar_codigo_turma">Digite o código da turma\ninformado pelo professor.</string>
@@ -75,5 +80,9 @@
     <string name="sp_action_configuracao">Configuracao</string>
 
     <string name="action_settings">Settings</string>
+    <string name="title_activity_chat">ChatActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
 
 </resources>

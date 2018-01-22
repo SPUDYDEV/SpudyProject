@@ -1,5 +1,6 @@
 package com.example.spudydev.spudy.usuario.professor.gui;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,16 +16,17 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.spudydev.spudy.R;
-import com.example.spudydev.spudy.TurmaActivity;
+import com.example.spudydev.spudy.activity.CriarTurmaActivity;
 import com.example.spudydev.spudy.activity.DisciplinaActivity;
 import com.example.spudydev.spudy.infraestrutura.gui.LoginActivity;
 import com.example.spudydev.spudy.infraestrutura.persistencia.AcessoFirebase;
 import com.example.spudydev.spudy.perfil.gui.MeuPerfilProfessorActivity;
 import com.example.spudydev.spudy.perfil.negocio.DadosMenuLateral;
-import com.example.spudydev.spudy.usuario.dominio.Usuario;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -33,7 +35,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Map;
 
 
 public class MainProfessorActivity extends AppCompatActivity
@@ -41,6 +43,10 @@ public class MainProfessorActivity extends AppCompatActivity
 
     private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     private DadosMenuLateral dadosMenuDAO = new DadosMenuLateral();
+    //Listview
+    private ArrayList<String> listaTurmasMinistradasAux;
+    private ListView lvTurmaProfessor;
+    //FimListView
     private  AlertDialog alerta;
 
     @Override
@@ -54,19 +60,6 @@ public class MainProfessorActivity extends AppCompatActivity
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.sp_navigation_drawer_open, R.string.sp_navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-
-        //Carregar turmas
-        carregarTurmas();
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fabButtonCriarTurma);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainProfessorActivity.this, TurmaActivity.class);
-                startActivity(intent);
-            }
-        });
-
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         //Chamando a classe para setar nome e email do nav_header_menu_professor
@@ -97,6 +90,24 @@ public class MainProfessorActivity extends AppCompatActivity
                 }
             }
         });
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fabButtonCriarTurma);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainProfessorActivity.this, CriarTurmaActivity.class);
+                startActivity(intent);
+            }
+        });
+
+
+        lvTurmaProfessor = findViewById(R.id.lvTurmasProfessor);
+        //teste
+
+        carregaTurmaMinistrada();
+
+        //teste
+
     }
 
     @Override
@@ -165,21 +176,23 @@ public class MainProfessorActivity extends AppCompatActivity
         alerta.show();
     }
     //Carregando turmas
-    public void carregarTurmas(){
-
+    private void carregaTurmaMinistrada(){
+        //Pega UID do user
+        final String uid = AcessoFirebase.getUidUsuario();
+        //Lista para salvar as turmas que o professor é responsável
         AcessoFirebase.getFirebase().addValueEventListener(new ValueEventListener() {
+            @SuppressLint("ShowToast")
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                ArrayList<String> turmasMinistradas = new ArrayList<String>();
-
-                /*
-                for (HashMap<String,HashMap<String,String>> i: dataSnapshot){
-                    String s = i.child("professor").child(AcessoFirebase.getUidUsuario()).child("turmasMinistradas").getValue(String.class);
-                    Toast.makeText(MainProfessorActivity.this, s, Toast.LENGTH_SHORT).show();
-
+                Map<String, Object> turmasMinistradas = (HashMap<String,Object>) dataSnapshot.child("professor").child(uid).child("turmasMinistradas").getValue();
+                listaTurmasMinistradasAux = new ArrayList<>();
+                for (Object i: turmasMinistradas.values()){
+                    if (!i.toString().equals("0")){
+                        //Aqui ele esta com todas as turmas do professor, pegar o cardview e seta o texto
+                        listaTurmasMinistradasAux.add(dataSnapshot.child("turma").child(i.toString()).child("nomeTurma").getValue(String.class).toUpperCase()+"\nCódigo da turma: "+i.toString());
+                    }
                 }
-                */
-                //DataSnapshot referenciaTurmasMinistradas = dataSnapshot.child("professor").child(AcessoFirebase.getUidUsuario()).child("turmasMinistradas");
+                setListViewTurmas(listaTurmasMinistradasAux);
             }
 
             @Override
@@ -188,6 +201,14 @@ public class MainProfessorActivity extends AppCompatActivity
             }
         });
     }
+
+    //Seta no listview
+    public void setListViewTurmas(ArrayList<String> turmasMinistradas){
+        ArrayAdapter<String> itemsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, turmasMinistradas);
+        lvTurmaProfessor.setAdapter(itemsAdapter);
+    }
+
+
     //Intent perfil professor
     public void abrirTelaMeuPerfilProfessorActivity(){
         Intent intentAbrirTelaMeuPerfilProfessorAcitivty = new Intent(MainProfessorActivity.this, MeuPerfilProfessorActivity.class);

@@ -8,5 +8,11 @@
     tools:context="com.example.spudydev.spudy.usuario.professor.gui.MainProfessorActivity"
     tools:showIn="@layout/app_bar_main_professor">
 
+    <ListView
+        android:id="@+id/lvTurmasProfessor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </ListView>
+
 </RelativeLayout>
 

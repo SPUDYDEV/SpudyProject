@@ -11,6 +11,7 @@ import android.widget.Toast;
 import com.example.spudydev.spudy.perfil.gui.MeuPerfilAlunoActivity;
 import com.example.spudydev.spudy.infraestrutura.persistencia.AcessoFirebase;
 import com.example.spudydev.spudy.R;
+import com.example.spudydev.spudy.perfil.gui.MeuPerfilProfessorActivity;
 import com.example.spudydev.spudy.registro.negocio.VerificaConexao;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -21,6 +22,7 @@ public class AlterarInstituicaoActivity extends AppCompatActivity {
     private EditText edt_alterarInstituicao;
     private VerificaConexao verificaConexao;
     private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    private String tipoConta = getIntent().getStringExtra("tipoConta");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,22 +37,38 @@ public class AlterarInstituicaoActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (verificaConexao.estaConectado()) {
-                    DatabaseReference referencia = AcessoFirebase.getFirebase().child("usuario").child(user.getUid()).child("instituicao");
-                    referencia.setValue(edt_alterarInstituicao.getText().toString());
-                    //Colocar a string do toast em values
-                    Toast.makeText(AlterarInstituicaoActivity.this, R.string.sp_alterar_instituicao_sucesso, Toast.LENGTH_SHORT).show();
-                    abrirTelaMeuPerfilActivity();
-
+                    if (verificaCampo()) {
+                        alterarInstituicao();
+                        Toast.makeText(AlterarInstituicaoActivity.this, R.string.sp_alterar_instituicao_sucesso, Toast.LENGTH_SHORT).show();
+                        abrirTelaMeuPerfilActivity();
+                    }
                 }else{
-                    //Colocar a string do toast em values
-                    Toast.makeText(AlterarInstituicaoActivity.this, R.string.sp_conexao_falha, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), R.string.sp_conexao_falha, Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
+
+    private boolean verificaCampo(){
+        if (edt_alterarInstituicao.getText().toString().isEmpty()){
+            edt_alterarInstituicao.setError(getString(R.string.sp_excecao_campo_vazio));
+            return false;
+        }
+        return true;
+    }
+    private void alterarInstituicao() {
+        AcessoFirebase.getFirebase().child("usuario").child(user.getUid()).child("instituicao").setValue(edt_alterarInstituicao.getText().toString());
+    }
+
     public void abrirTelaMeuPerfilActivity (){
-        Intent intentAbrirTelaMeuPerfilActivity  = new Intent(this, MeuPerfilAlunoActivity.class);
-        startActivity(intentAbrirTelaMeuPerfilActivity );
-        finish();
+        if (tipoConta.equals("aluno")) {
+            Intent intent = new Intent(this, MeuPerfilAlunoActivity.class);
+            startActivity(intent);
+            finish();
+        }else{
+            Intent intent = new Intent(this, MeuPerfilProfessorActivity.class);
+            startActivity(intent);
+            finish();
+        }
     }
 }

@@ -11,25 +11,27 @@ import android.widget.Toast;
 import com.example.spudydev.spudy.perfil.gui.MeuPerfilAlunoActivity;
 import com.example.spudydev.spudy.infraestrutura.persistencia.AcessoFirebase;
 import com.example.spudydev.spudy.R;
+import com.example.spudydev.spudy.perfil.gui.MeuPerfilProfessorActivity;
 import com.example.spudydev.spudy.registro.negocio.VerificaConexao;
 import com.github.rtoshiro.util.format.SimpleMaskFormatter;
 import com.github.rtoshiro.util.format.text.MaskTextWatcher;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
 
 public class AlterarDataNascimentoActivity extends AppCompatActivity {
+
     private EditText edt_alterarDataNascimento;
     private VerificaConexao verificaConexao;
     private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    private String tipoConta = getIntent().getStringExtra("tipoConta");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alterar_data_nascimento);
 
-        edt_alterarDataNascimento = (EditText)findViewById(R.id.edt_AlterarDataNascimento);
-        Button btn_alterarDataNascimento = (Button)findViewById(R.id.btn_AlterarDataNascimento);
+        edt_alterarDataNascimento = (EditText) findViewById(R.id.edt_AlterarDataNascimento);
+        Button btn_alterarDataNascimento = (Button) findViewById(R.id.btn_AlterarDataNascimento);
         verificaConexao = new VerificaConexao(this);
 
         //Máscara
@@ -41,25 +43,40 @@ public class AlterarDataNascimentoActivity extends AppCompatActivity {
         btn_alterarDataNascimento.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(verificaConexao.estaConectado()){
-                    DatabaseReference referencia = AcessoFirebase.getFirebase().child("pessoa").child(user.getUid()).child("dataNascimento");
-                    if (!edt_alterarDataNascimento.getText().toString().isEmpty()){
-                        referencia.setValue(edt_alterarDataNascimento.getText().toString());
+                if (verificaConexao.estaConectado()) {
+                    if (verificaCampo()){
+                        alterarDataNascimento();
                         Toast.makeText(AlterarDataNascimentoActivity.this, R.string.sp_alterar_data_nascimento_sucesso, Toast.LENGTH_SHORT).show();
                         abrirTelaMeuPerfilActivity();
-                    } else {
-                        edt_alterarDataNascimento.setError(getString(R.string.sp_excecao_campo_vazio));
                     }
-
-                }else{
-                    Toast.makeText(AlterarDataNascimentoActivity.this, R.string.sp_conexao_falha, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), R.string.sp_conexao_falha, Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
+
+    public boolean verificaCampo(){
+        if (edt_alterarDataNascimento.getText().toString().isEmpty()){
+            edt_alterarDataNascimento.setError(getString(R.string.sp_excecao_campo_vazio));
+            return false;
+        }
+        return true;
+    }
+
+    private void alterarDataNascimento() {
+        AcessoFirebase.getFirebase().child("pessoa").child(user.getUid()).child("dataNascimento").setValue(edt_alterarDataNascimento.getText().toString());
+    }
+
     public void abrirTelaMeuPerfilActivity (){
-        Intent intentAbrirTelaMeuPerfilActivity  = new Intent(this, MeuPerfilAlunoActivity.class);
-        startActivity(intentAbrirTelaMeuPerfilActivity );
-        finish();
+        if (tipoConta.equals("aluno")) {
+            Intent intent = new Intent(this, MeuPerfilAlunoActivity.class);
+            startActivity(intent);
+            finish();
+        }else{
+            Intent intent = new Intent(this, MeuPerfilProfessorActivity.class);
+            startActivity(intent);
+            finish();
+        }
     }
 }
